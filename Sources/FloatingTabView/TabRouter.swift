@@ -8,17 +8,17 @@
 import SwiftUI
 
 
-/// The "tabs" with which the `FloatingTabView` works with.
-protocol FloatingTab: Identifiable, Equatable { }
+/// The "tab" type with which the `FloatingTabView` works with.
+public protocol FloatingTab: Identifiable, Equatable { }
 
 /// Observable object, that holds reference to `Tab`s and currently selected tab.
-class TabRouter<Tab: FloatingTab>: ObservableObject {
+open class TabRouter<Tab: FloatingTab>: ObservableObject {
     
-    @Published var currentTab: Tab
+    @Published public var currentTab: Tab
     
-    let tabs: [Tab]
+    public let tabs: [Tab]
     
-    init(tabs: [Tab], initiallySelectedTab: Tab) {
+    public init(tabs: [Tab], initiallySelectedTab: Tab) {
         self.tabs = tabs
         self.currentTab = initiallySelectedTab
     }
