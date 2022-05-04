@@ -16,11 +16,11 @@ import SwiftUI
 /// When initializing it, you need to pass a view builder closure
 /// that needs to return the view content for a given tab,
 /// and a view that will be used as a tab bar.
-public struct FloatingTabView<Tab: FloatingTab, TabContent: View, TabIcon: View, TabBarBackgroundView: View>: View {
+public struct FloatingTabView<Tab: FloatingTab, TabContent: View, TabIcon: View>: View {
     @StateObject public var tabRouter: TabRouter<Tab>
     @Binding public var barOffset: CGFloat
     @Binding public var barPadding: CGFloat
-    public let tabBarView: CapsuleTabBarView<Tab, TabIcon, TabBarBackgroundView>
+    public let tabBarView: CapsuleTabBarView<Tab, TabIcon>
     @ViewBuilder public let contentFor: (Tab) -> (TabContent)
     
     /// Creates a new instance with given dependencies.
@@ -34,7 +34,7 @@ public struct FloatingTabView<Tab: FloatingTab, TabContent: View, TabIcon: View,
     public init(tabRouter: TabRouter<Tab>,
                 barOffset: Binding<CGFloat>,
                 barPadding: Binding<CGFloat>,
-                tabBarView: CapsuleTabBarView<Tab, TabIcon, TabBarBackgroundView>,
+                tabBarView: CapsuleTabBarView<Tab, TabIcon>,
                 @ViewBuilder contentFor: @escaping (Tab) -> (TabContent)) {
         
         self._tabRouter = StateObject(wrappedValue: tabRouter)

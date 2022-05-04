@@ -7,46 +7,12 @@
 
 import SwiftUI
 
-// MARK: - CapsuleTabBarView Theme
-
-extension CapsuleTabBarView {
-    
-    public struct Theme<Background: View> {
-        /// Set a view that will be loaded as a background here. (Typically `Color`)
-        let background: Background
-        
-        /// Controls the spacing between tab icons.
-        let interItemSpacing: CGFloat
-        
-        /// Color that tints the currently selected tab icon.
-        let selectedTabColor: Color
-        
-        /// Color that tints the non selected tabs.
-        let nonSelectedTabColor: Color
-        
-        
-        /// Creates a new instance, for injecting into a `CapsuleTabBarView`.
-        ///
-        /// - Parameters:
-        ///   - background: Set a view that will be loaded as a background here. (Typically `Color`)
-        ///   - interItemSpacing: Controls the spacing between tab icons.
-        ///   - selectedTabColor: Color that tints the currently selected tab icon.
-        ///   - nonSelectedTabColor: Color that tints the non selected tabs.
-        public init(background: Background, interItemSpacing: CGFloat, selectedTabColor: Color, nonSelectedTabColor: Color) {
-            self.background = background
-            self.interItemSpacing = interItemSpacing
-            self.selectedTabColor = selectedTabColor
-            self.nonSelectedTabColor = nonSelectedTabColor
-        }
-    }
-}
-
 // MARK: - CapsuleTabBarView
 
 /// A view that presents interactive list of `TabIcon`s for each `Tab`, inside the injected `TabRouter`.
-public struct CapsuleTabBarView<Tab: FloatingTab, TabIcon: View, Background: View>: View {
+public struct CapsuleTabBarView<Tab: FloatingTab, TabIcon: View>: View {
     @StateObject public var tabRouter: TabRouter<Tab>
-    public let theme: Theme<Background>
+    public let theme: CapsuleTabBarViewThemeType
     @ViewBuilder public let tabIconFor: (Tab) -> (TabIcon)
     
     
@@ -55,7 +21,7 @@ public struct CapsuleTabBarView<Tab: FloatingTab, TabIcon: View, Background: Vie
     ///   - tabRouter: The object that keeps track of the tabs.
     ///   - theme: Container holding appearance configuration for this instance.
     ///   - tabIconFor: ViewBuilder closure, that needs to provide tab icon for given tab.
-    public init(tabRouter: TabRouter<Tab>, theme: CapsuleTabBarView<Tab, TabIcon, Background>.Theme<Background>, @ViewBuilder tabIconFor: @escaping (Tab) -> (TabIcon)) {
+    public init(tabRouter: TabRouter<Tab>, theme: CapsuleTabBarViewThemeType, @ViewBuilder tabIconFor: @escaping (Tab) -> (TabIcon)) {
         self._tabRouter = StateObject(wrappedValue: tabRouter)
         self.theme = theme
         self.tabIconFor = tabIconFor
@@ -73,7 +39,7 @@ public struct CapsuleTabBarView<Tab: FloatingTab, TabIcon: View, Background: Vie
                         }
                 }
             }
-            .background(theme.background)
+            .background(theme.backgroundColor)
             .clipShape(Capsule())
             Spacer()
         }

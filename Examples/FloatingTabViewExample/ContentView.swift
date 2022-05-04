@@ -23,17 +23,17 @@ struct ContentView_Previews: PreviewProvider {
         let router = TabRouter<ExampleAppTab>(tabs: [.home, .search, .user], initiallySelectedTab: .home)
         
         let bar = CapsuleTabBarView(tabRouter: router,
-                                    theme: .init(background: Color.white,
-                                                  interItemSpacing: 10,
-                                                 selectedTabColor: Color.red,
-                                                  nonSelectedTabColor: .gray)) { tab in
+                                    theme: CapsuleTabBarViewTheme(backgroundColor: .white,
+                                                                        interItemSpacing: 10,
+                                                                        selectedTabColor: .red,
+                                                                        nonSelectedTabColor: .gray)) { tab in
             switch tab {
             case .home: SystemImageTabIconView(systemImageName: "homekit")
             case .search: SystemImageTabIconView(systemImageName: "heart")
             case .user: SystemImageTabIconView(systemImageName: "person.crop.circle")
             }
         }
-                                     
+        
         return FloatingTabView(tabRouter: router, barOffset: $barOffset, barPadding: .constant(20), tabBarView: bar) { tab in
             switch tab {
             case .home:

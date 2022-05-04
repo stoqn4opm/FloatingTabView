@@ -18,9 +18,9 @@ struct FloatingTabViewExampleApp: App {
             let router = TabRouter<ExampleAppTab>(tabs: [.home, .search, .user], initiallySelectedTab: .home)
             
             let bar = CapsuleTabBarView(tabRouter: router,
-                                        theme: .init(background: Color.white,
+                                        theme: CapsuleTabBarViewTheme(backgroundColor: .white,
                                                      interItemSpacing: 10,
-                                                     selectedTabColor: Color.red,
+                                                     selectedTabColor: .red,
                                                      nonSelectedTabColor: .gray)) { tab in
                 switch tab {
                 case .home: SystemImageTabIconView(systemImageName: "homekit")
