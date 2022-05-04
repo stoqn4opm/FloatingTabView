@@ -18,29 +18,58 @@ import SwiftUI
 /// and a view that will be used as a tab bar.
 public struct FloatingTabView<Tab: FloatingTab, TabContent: View, TabIcon: View, TabBarBackgroundView: View>: View {
     @StateObject public var tabRouter: TabRouter<Tab>
+    @Binding public var barOffset: CGFloat
+    @Binding public var barPadding: CGFloat
     public let tabBarView: CapsuleTabBarView<Tab, TabIcon, TabBarBackgroundView>
     @ViewBuilder public let contentFor: (Tab) -> (TabContent)
-    
     
     /// Creates a new instance with given dependencies.
     /// - Parameters:
     ///   - tabRouter: The object that keeps track of the tabs.
     ///   - tabBarView: The view that you want to be presented as a floating tab bar.
     ///   - contentFor: ViewBuilder closure, that needs to provide view content for given tab.
-    public init(tabRouter: TabRouter<Tab>, tabBarView: CapsuleTabBarView<Tab, TabIcon, TabBarBackgroundView>, @ViewBuilder contentFor: @escaping (Tab) -> (TabContent)) {
+    ///   - barOffset: Controls the position of the floating tab bar. 0 being hidden away,
+    ///    1 being situated in its designated space.
+    ///   - barPadding: The distance from the bottom of the floating tab to the bottom edge
+    public init(tabRouter: TabRouter<Tab>,
+                barOffset: Binding<CGFloat>,
+                barPadding: Binding<CGFloat>,
+                tabBarView: CapsuleTabBarView<Tab, TabIcon, TabBarBackgroundView>,
+                @ViewBuilder contentFor: @escaping (Tab) -> (TabContent)) {
+        
         self._tabRouter = StateObject(wrappedValue: tabRouter)
+        self._barOffset = barOffset
+        self._barPadding = barPadding
         self.tabBarView = tabBarView
         self.contentFor = contentFor
     }
     
     public var body: some View {
-        ZStack {
-            contentFor(tabRouter.currentTab)
-            VStack {
-                Spacer()
-                tabBarView
-                    .padding()
+        ZStack(alignment: Alignment(horizontal: .center, vertical: .barAlignment)) {
+            ZStack(alignment: .center) {
+                contentFor(tabRouter.currentTab)
             }
+            .alignmentGuide(.barAlignment) { $0[.bottom] }
+            tabBarView
+                .alignmentGuide(.barAlignment, computeValue: computedBarAlignment(for:))
         }
     }
+    
+    private func computedBarAlignment(for viewDimensions: ViewDimensions) -> CGFloat {
+        let bottom = viewDimensions[.top] - barPadding
+        let top = viewDimensions[.bottom] + barPadding
+        
+        let safeOffset = max(0, min(1, barOffset))
+        return (1 - safeOffset) * bottom + safeOffset * top
+    }
+}
+
+extension VerticalAlignment {
+    private enum BarAlignment: AlignmentID {
+        static func defaultValue(in context: ViewDimensions) -> CGFloat {
+            context.height
+        }
+    }
+    
+    static let barAlignment = VerticalAlignment(BarAlignment.self)
 }

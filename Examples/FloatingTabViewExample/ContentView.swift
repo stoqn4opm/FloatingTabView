@@ -19,6 +19,7 @@ enum ExampleAppTab: String, FloatingTab, CaseIterable {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
+        @State var barOffset: CGFloat = 0
         let router = TabRouter<ExampleAppTab>(tabs: [.home, .search, .user], initiallySelectedTab: .home)
         
         let bar = CapsuleTabBarView(tabRouter: router,
@@ -33,7 +34,7 @@ struct ContentView_Previews: PreviewProvider {
             }
         }
                                      
-        return FloatingTabView(tabRouter: router, tabBarView: bar) { tab in
+        return FloatingTabView(tabRouter: router, barOffset: $barOffset, barPadding: .constant(20), tabBarView: bar) { tab in
             switch tab {
             case .home:
                 Rectangle()

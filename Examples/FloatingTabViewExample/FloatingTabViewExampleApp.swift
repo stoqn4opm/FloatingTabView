@@ -10,6 +10,9 @@ import FloatingTabView
 
 @main
 struct FloatingTabViewExampleApp: App {
+
+    @State private var barOffset: CGFloat = 10
+
     var body: some Scene {
         WindowGroup {
             let router = TabRouter<ExampleAppTab>(tabs: [.home, .search, .user], initiallySelectedTab: .home)
@@ -26,7 +29,7 @@ struct FloatingTabViewExampleApp: App {
                 }
             }
             
-            FloatingTabView(tabRouter: router, tabBarView: bar) { tab in
+            FloatingTabView(tabRouter: router, barOffset: $barOffset, barPadding: .constant(20), tabBarView: bar) { tab in
                 switch tab {
                 case .home:
                     Group {
@@ -36,6 +39,11 @@ struct FloatingTabViewExampleApp: App {
                             .background(Color.red)
                     }
                     .edgesIgnoringSafeArea(.all)
+                    .onTapGesture {
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) {
+                            barOffset = barOffset == 0 ? 1 : 0
+                        }
+                    }
                 case .search:
                     Group {
                         Rectangle()
